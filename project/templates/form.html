@@ -62,12 +62,11 @@
         <div class="control">
           <div class="select">
             <select name="fav_language">
-              <option value="1">Python</option>
-              <option value="2">JavaScript</option>
-              <option>PHP</option>
-              <option>Ruby</option>
-              <option>C++</option>
-              <option>Go</option>
+              
+              <!-- Loop through langues and populate -->
+               {% for language in languages %}
+                <option value="{{language.id}}">{{language.name}}</option>
+               {% endfor %}
             </select>
           </div>
         </div>
@@ -86,18 +85,13 @@
           <label class="checkbox">
             What do you want to learn?
           </label>
+          <!-- Loop through topics in db and show as checkbox -->
+          {% for topic in topics %}
           <label class="checkbox">
-            <input type="checkbox" value="1" name="interest_in_topics">
-            Web Apps
+            <input type="checkbox" value="{{topic.id}}" name="interest_in_topics">
+            {{topic.name}}
           </label>
-          <label class="checkbox">
-            <input type="checkbox" value="2" name="interest_in_topics">
-            Mobile Apps
-          </label>
-          <label class="checkbox">
-            <input type="checkbox" value="3" name="interest_in_topics">
-            APIs
-          </label>
+          {% endfor %}
         </div>
         <p class="help is-danger"></p>
       </div>

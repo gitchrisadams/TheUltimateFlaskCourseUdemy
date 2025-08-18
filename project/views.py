@@ -1,5 +1,6 @@
 from .extensions import db
 from flask import Blueprint, render_template, request
+from .models import Language, Topic
 
 main = Blueprint("main", __name__)
 
@@ -27,4 +28,12 @@ def index():
         print("interest_in_topics", interest_in_topics)
 
         return "Form Submitted!"
-    return render_template("form.html")
+
+    languages = Language.query.all()
+    topics = Topic.query.all()
+
+    # Create context so we can unpack and send to form
+    context = {"languages": languages, "topics": topics}
+
+    # Passed the languages/topics to context
+    return render_template("form.html", **context)
