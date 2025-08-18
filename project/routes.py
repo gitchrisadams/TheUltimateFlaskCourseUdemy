@@ -1,5 +1,4 @@
-from flask import Blueprint
-from .models import MyModel
+from flask import Blueprint, render_template
 from .extensions import db
 
 main = Blueprint("main", __name__)
@@ -7,4 +6,4 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
-    return "<h1>Using Blueprint</h1>"
+    return render_template("form.html")
