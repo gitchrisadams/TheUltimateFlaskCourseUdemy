@@ -1,4 +1,5 @@
 from .extensions import db
+from werkzeug.security import generate_password_hash
 
 # Create an association table to link Topics and members
 member_topic_table = db.Table(
@@ -42,6 +43,21 @@ class Member(db.Model):
         lazy=True,
         backref=db.backref("topic", lazy=True),
     )
+
+    # @property allows us to access this like password.value
+    @property
+    def password(self):
+        raise AttributeError("Cannot view password")
+
+    @password.setter
+    def password(self, password):
+        """
+        Generates password hash from a password
+
+        Args:
+            password (str): The password to hash
+        """
+        self.password_hash = generate_password_hash(password)
 
 
 class Language(db.Model):
