@@ -13,6 +13,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     """
     A class representing a user.
+    The User is a One to Many relationship.
     A user can have many orders, but an order
     belongs to only one user.
 
@@ -33,6 +34,15 @@ class User(db.Model):
     orders = db.relationship("Order", back_populates=("user"))
 
 
+# Association Table for Many To Many relationship
+# for orders and products
+order_product = db.Table(
+    "order_product",
+    db.Column("order_id", db.ForeignKey("order.id"), primary_key=True),
+    db.Column("product_id", db.ForeignKey("product.id"), primary_key=True),
+)
+
+
 class Order(db.Model):
     """
     A class representing an Order of the user.
@@ -44,6 +54,7 @@ class Order(db.Model):
         total(int): The name of the user.
         user_id(int): The foreign key user.id in the User Table
         user(str): The relationship to the User table
+        orders: The relationship between order and products
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -56,6 +67,35 @@ class Order(db.Model):
     # This allows you to do use order.user and get the order
     # associated w/ user, the back_populates links to the orders table
     user = db.relationship("User", back_populates=("orders"))
+
+    # Establish relationship between many to many of products and orders
+    # The order_product is the association table we created above.
+    products = db.relationship(
+        "Product", secondary=order_product, back_populates="orders"
+    )
+
+
+class Product(db.Model):
+    """
+    A class representing a Product.
+    A product represents a Many to Many relationship.
+    A Product can be in many orders and
+    a order can have many products.
+
+    Attributes:
+        id(int): The id of the product.
+        name(str): The name of the product
+        orders: The relationship between order and products
+    """
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+
+    # Establish relationship between many to many of products and orders
+    # The order_product is the association table we created above.
+    orders = db.relationship(
+        "Order", secondary=order_product, back_populates="products"
+    )
 
 
 # Home / route
@@ -235,3 +275,72 @@ def delete_data():
     # Delete the user
     db.session.delete(user)
     db.session.commit()
+
+
+def query_tables():
+    """
+    Displays the OrderID and Total for an order
+    """
+    first_user = User.query.first()
+
+    # Loop through each order
+    print("First User: ")
+    for order in first_user.orders:
+        print(f"Order ID: {order.id} Total: {order.total}")
+
+    second_user = User.query.filter_by(id=2).first()  # Gets 2nd user
+    print("Second User: ")
+    for order in second_user.orders:
+        print(f"Order ID: {order.id} Total: {order.total}")
+
+
+def add_products_to_orders():
+    """
+    Adds products to the database.
+    """
+    first_product = Product(name="First")
+    second_product = Product(name="Second")
+    third_product = Product(name="Third")
+
+    # Add products to the DB:
+    db.session.add_all([first_product, second_product, third_product])
+
+    # Get the first order:
+    first_order = Order.query.first()
+
+    # Add products to the order
+    first_order.products.append(first_product)
+    first_order.products.append(second_product)
+
+    # Save/commit
+    db.session.commit()
+
+
+def query_order_products():
+    """
+    Queries for the first and second orders
+    """
+    first_order = Order.query.filter_by(id=1).first()
+    second_order = Order.query.filter_by(id=2).first()
+
+    print("First order products")
+    # Loop through each product in first order
+    for product in first_order.products:
+        print(f"Product name: {product.name}")
+
+    print("Second order products")
+    # Loop through each product in second order
+    for product in second_order.products:
+        print(f"Product name: {product.name}")
+
+
+def get_all_users():
+    """
+    Display all users along with the count of users.
+    """
+    users = User.query.all()
+    for user in users:
+        print(f"User name: {user.name}")
+
+    user_count = User.query.count()
+    print(f"User Count: {user_count}")
