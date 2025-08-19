@@ -6,8 +6,23 @@ from .models import Language, Topic, Member
 main = Blueprint("main", __name__)
 
 
-@main.route("/", methods=["GET", "POST"])
-def index():
+@main.route("/", methods=["GET", "POST"], defaults={"member_id": None})
+@main.route("/<int:member_id>", methods=["GET", "POST"])
+def index(member_id):
+    """
+    The Default root route of /.
+    If No member_id is supplied, it defaults to None
+
+    Args:
+        member_id (str): The member id
+
+    Returns:
+        str: form submitted success message.
+    """
+    member = None
+    if member_id:
+        member = Member.query.get_or_404(member_id)
+
     if request.method == "POST":
         # Get all the form input
         email = request.form["email"]
@@ -47,7 +62,13 @@ def index():
     topics = Topic.query.all()
 
     # Create context so we can unpack and send to form
-    context = {"languages": languages, "topics": topics}
+    # These variables are available in the template i.e. form.html
+    context = {
+        "member_id": member_id,
+        "languages": languages,
+        "topics": topics,
+        "member": member,
+    }
 
     # Passed the languages/topics to context
     return render_template("form.html", **context)

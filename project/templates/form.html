@@ -16,7 +16,9 @@
         <!-- This handles submitting of the form and uses the main
          route to handle the submit request.
          -->
-        <form method="POST" action="{{url_for('main.index')}}">
+         <!-- If there is a member_id such as /1 /2 etc.. then it will
+          use that to submit request, allowing user to edit their own profile -->
+        <form method="POST" action="{{url_for('main.index', member_id=member_id)}}">
         <h1 class="title">
           Fill Out This Form!
         </h1>
@@ -28,7 +30,8 @@
       <div class="field">
         <label class="label">Email</label>
         <div class="control">
-          <input class="input" type="email" name="email" placeholder="Email">
+          <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
+          <input class="input" type="email" name="email" placeholder="Email" value="{{member.email}}"">
         </div>
         <p class="help is-danger"></p>
       </div>
@@ -44,7 +47,8 @@
       <div class="field">
         <label class="label">Location</label>
         <div class="control">
-          <input class="input" type="text" name="location" placeholder="Location">
+          <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
+          <input class="input" type="text" name="location" placeholder="Location" value="{{member.location}}">
         </div>
         <p class="help is-danger"></p>
       </div>
@@ -52,7 +56,8 @@
       <div class="field">
         <label class="label">When Did You First Learn to Code?</label>
         <div class="control">
-          <input class="input" type="date" name="first_learn_date">
+          <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
+          <input class="input" type="date" name="first_learn_date"{% if member %} value="{{member.first_learn_date.strftime('%Y-%m-%d')}}" {%endif%}>
         </div>
         <p class="help is-danger"></p>
       </div>
@@ -64,8 +69,9 @@
             <select name="fav_language">
               
               <!-- Loop through langues and populate -->
+               <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
                {% for language in languages %}
-                <option value="{{language.id}}">{{language.name}}</option>
+                <option value="{{ language.id }}" {% if member.fav_language == language.id %}selected{% endif %}>{{ language.name }}</option>
                {% endfor %}
             </select>
           </div>
@@ -75,7 +81,8 @@
       <div class="field">
         <label class="label">Tell Me About Yourself</label>
         <div class="control">
-          <textarea class="textarea" name="about" placeholder="I am..."></textarea>
+          <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
+          <textarea class="textarea" name="about" placeholder="I am...">{{member.about}}</textarea>
         </div>
         <p class="help is-danger"></p>
       </div>
@@ -88,7 +95,8 @@
           <!-- Loop through topics in db and show as checkbox -->
           {% for topic in topics %}
           <label class="checkbox">
-            <input type="checkbox" value="{{topic.id}}" name="interest_in_topics">
+            <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
+            <input type="checkbox" value="{{topic.id}}" name="interest_in_topics" {% if topic in member.interest_in_topics %}checked{% endif %}>
             {{topic.name}}
           </label>
           {% endfor %}
@@ -101,12 +109,13 @@
           <label class="radio">
             Are you interested in learning a new language?
           </label>
+          <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
           <label class="radio">
-            <input type="radio" value="yes" name="learn_new_interest">
+            <input type="radio" value="yes" name="learn_new_interest" {% if member.learn_new_interest%}checked{%endif%}>
             Yes
           </label>
           <label class="radio">
-            <input type="radio" value="no" name="learn_new_interest">
+            <input type="radio" value="no" name="learn_new_interest"{% if not member.learn_new_interest%}checked{%endif%}>
             No
           </label>
         </div>
