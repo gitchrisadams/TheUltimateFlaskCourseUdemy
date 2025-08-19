@@ -33,7 +33,7 @@
           <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
           <input class="input" type="email" name="email" placeholder="Email" value="{{member.email}}"">
         </div>
-        <p class="help is-danger"></p>
+        <p class="help is-danger">{{ errors.get('email', '')}}</p>
       </div>
 
       <div class="field">
@@ -41,7 +41,7 @@
         <div class="control">
           <input class="input" type="password" name="password" placeholder="Password">
         </div>
-        <p class="help is-danger"></p>
+        <p class="help is-danger">{{ errors.get('password', '')}}</p>
       </div>
 
       <div class="field">
@@ -50,7 +50,7 @@
           <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
           <input class="input" type="text" name="location" placeholder="Location" value="{{member.location}}">
         </div>
-        <p class="help is-danger"></p>
+        <p class="help is-danger">{{ errors.get('location', '')}}</p>
       </div>
 
       <div class="field">
@@ -59,7 +59,7 @@
           <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
           <input class="input" type="date" name="first_learn_date"{% if member %} value="{{member.first_learn_date.strftime('%Y-%m-%d')}}" {%endif%}>
         </div>
-        <p class="help is-danger"></p>
+        <p class="help is-danger">{{ errors.get('first_learn_date', '')}}</p>
       </div>
 
       <div class="field">
@@ -84,7 +84,7 @@
           <!-- localhost:5000/1 /2 etc.. will load data for specific user -->
           <textarea class="textarea" name="about" placeholder="I am...">{{member.about}}</textarea>
         </div>
-        <p class="help is-danger"></p>
+        <p class="help is-danger">{{ errors.get('about', '')}}</p>
       </div>
 
       <div class="field">
@@ -101,7 +101,7 @@
           </label>
           {% endfor %}
         </div>
-        <p class="help is-danger"></p>
+        <p class="help is-danger">{{ errors.get('interest_in_topics', '')}}</p>
       </div>
 
       <div class="field">
