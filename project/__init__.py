@@ -1,5 +1,5 @@
 from flask import Flask
-from .views import main
+from .views.main import main
 from .extensions import db
 
 

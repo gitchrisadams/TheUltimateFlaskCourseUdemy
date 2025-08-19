@@ -1,7 +1,7 @@
 from datetime import datetime
-from .extensions import db
+from ..extensions import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from .models import Language, Topic, Member
+from ..models import Language, Topic, Member
 
 main = Blueprint("main", __name__)
 
