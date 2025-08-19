@@ -1,5 +1,6 @@
 from .extensions import db
 from werkzeug.security import generate_password_hash
+from datetime import datetime
 
 # Create an association table to link Topics and members
 member_topic_table = db.Table(
@@ -58,6 +59,37 @@ class Member(db.Model):
             password (str): The password to hash
         """
         self.password_hash = generate_password_hash(password)
+
+    def member_to_json(self):
+        """
+        Formats the members in json format, it gets all the members.
+        Requst would look like this: http://localhost:5000/api/member
+
+        Returns:
+            object: The members formatted in json.
+        """
+        # Loop through topics and create a new dict with id and name
+        topics = []
+        for topic in self.interest_in_topics:
+            topics.append({"id": topic.id, "name": topic.name})
+
+        # Get the language id and name
+        fav_language = Language.query.get(self.fav_language)
+        language_json = {"id": fav_language.id, "name": fav_language.name}
+
+        # Prepared json to return
+        member_json = {
+            "id": self.id,
+            "email": self.email,
+            "location": self.location,
+            "first_learn_date": datetime.strftime(self.first_learn_date, "%Y-%m-%d"),
+            "fav_language": language_json,
+            "about": self.about,
+            "learn_new_interest": self.learn_new_interest,
+            "interest_in_topics": topics,
+        }
+
+        return member_json
 
 
 class Language(db.Model):
