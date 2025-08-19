@@ -66,7 +66,7 @@ class Member(db.Model):
         Requst would look like this: http://localhost:5000/api/member
 
         Returns:
-            object: The members formatted in json.
+            dict: The members formatted in json.
         """
         # Loop through topics and create a new dict with id and name
         topics = []
